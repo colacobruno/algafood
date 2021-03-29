@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class FormaPagamento {
     @EqualsAndHashCode.Include
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "FORMAS_PAGAMENTO_ID")
     private Long id;
 
     @Column(nullable = false)

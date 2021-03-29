@@ -20,7 +20,7 @@ public class Restaurante {
 
 	@EqualsAndHashCode.Include
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "RESTAURANTES_ID")
 	private Long id;
 	
 	private String nome;

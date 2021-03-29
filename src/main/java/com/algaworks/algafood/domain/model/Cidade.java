@@ -12,7 +12,7 @@ public class Cidade {
 
     @EqualsAndHashCode.Include
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "CIDADES_ID")
     private Long id;
 
     @Column(nullable = false)
