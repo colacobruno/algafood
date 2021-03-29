@@ -9,11 +9,11 @@ insert into estado (id, nome) values (1000, 'Minas Gerais');
 insert into estado (id, nome) values (1001, 'São Paulo');
 insert into estado (id, nome) values (1002, 'Ceará');
 
-insert into cidade (id, nome, estado_id) values (1, 'Uberlândia', 1001);
-insert into cidade (id, nome, estado_id) values (2, 'Belo Horizonte', 1000);
-insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 1001);
-insert into cidade (id, nome, estado_id) values (4, 'Campinas', 1001);
-insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 1002);
+insert into cidade (id, nome, estado_id) values (1000, 'Uberlândia', 1001);
+insert into cidade (id, nome, estado_id) values (1001, 'Belo Horizonte', 1000);
+insert into cidade (id, nome, estado_id) values (1002, 'São Paulo', 1001);
+insert into cidade (id, nome, estado_id) values (1003, 'Campinas', 1001);
+insert into cidade (id, nome, estado_id) values (1004, 'Fortaleza', 1002);
 
 insert into forma_pagamento (id, descricao) values (1000, 'Cartão de crédito');
 insert into forma_pagamento (id, descricao) values (1001, 'Cartão de débito');
