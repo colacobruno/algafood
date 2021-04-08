@@ -11,11 +11,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Predicate;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /*
  Estendendo RestauranteRepositoryQueries pois se mudar o nome da consulta (find) aqui o no controller, não dará  erro
@@ -42,10 +44,15 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder(); // Construir elementos para consulta dinâmica
 
         CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class); // Criar uma query de restaurante
-        criteria.from(Restaurante.class); // from Restaurante
+        Root<Restaurante> root = criteria.from(Restaurante.class); // from Restaurante
+
+        Predicate nomePredicate = builder.like(root.get("nome"), "%" + nome + "%");
+        Predicate taxaInicialPredicate = builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial);
+        Predicate taxaFinalPredicate = builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal);
+
+        criteria.where(nomePredicate, taxaInicialPredicate, taxaFinalPredicate);
 
         TypedQuery<Restaurante> query = entityManager.createQuery(criteria);
-
 
         return query.getResultList();
     }
