@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Predicate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,11 +47,21 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
         CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class); // Criar uma query de restaurante
         Root<Restaurante> root = criteria.from(Restaurante.class); // from Restaurante
 
-        Predicate nomePredicate = builder.like(root.get("nome"), "%" + nome + "%");
-        Predicate taxaInicialPredicate = builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial);
-        Predicate taxaFinalPredicate = builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal);
+        ArrayList<Predicate> predicates = new ArrayList<Predicate>();
 
-        criteria.where(nomePredicate, taxaInicialPredicate, taxaFinalPredicate);
+        if(StringUtils.hasText(nome)) {
+            predicates.add(builder.like(root.get("nome"), "%" + nome + "%"));
+        }
+
+        if(taxaFreteInicial != null) {
+            predicates.add(builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial));
+        }
+
+        if(taxaFreteFinal != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal));
+        }
+
+        criteria.where(predicates.toArray(new Predicate[0])); // o where espera um array então precisamos converter a lista em array
 
         TypedQuery<Restaurante> query = entityManager.createQuery(criteria);
 
