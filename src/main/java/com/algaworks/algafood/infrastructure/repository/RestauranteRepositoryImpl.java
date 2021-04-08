@@ -2,13 +2,18 @@ package com.algaworks.algafood.infrastructure.repository;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepositoryQueries;
+import com.ctc.wstx.util.StringUtil;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  Estendendo RestauranteRepositoryQueries pois se mudar o nome da consulta (find) aqui o no controller, não dará  erro
@@ -30,14 +35,32 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
     @Override
     public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 
-        // era para usar var ao invés de String, mas é do java 10
-        String jpql = "from Restaurante where nome like :nome " +
-                "and taxaFrete between :taxaInicial and :taxaFinal";
+        // Era para usar var ao invés de String, mas é do java 10
+        StringBuilder jpql = new StringBuilder();
+        jpql.append("from Restaurante where 0 = 0 ");
 
-        return entityManager.createQuery(jpql, Restaurante.class)
-                .setParameter("nome","%" + nome + "%")
-                .setParameter("taxaInicial", taxaFreteInicial)
-                .setParameter("taxaFinal", taxaFreteFinal)
-                .getResultList();
+        Map<String, Object> parametros = new HashMap<String, Object>();
+
+        if(StringUtils.hasLength(nome)){
+            jpql.append("and LOWER(nome) like :nome ");
+            parametros.put("nome", "%" + nome.toLowerCase() + "%");
+        }
+
+        if(taxaFreteInicial != null){
+            jpql.append("and taxaFrete >= :taxaInicial ");
+            parametros.put("taxaInicial", taxaFreteInicial);
+        }
+
+        if(taxaFreteFinal != null){
+            jpql.append("and taxaFrete <= :taxaFinal ");
+            parametros.put("taxaFinal", taxaFreteFinal);
+        }
+
+        TypedQuery<Restaurante> query = entityManager
+                .createQuery(jpql.toString(), Restaurante.class);
+
+        parametros.forEach((chave, valor) -> query.setParameter(chave, valor));
+
+        return query.getResultList();
     }
 }
