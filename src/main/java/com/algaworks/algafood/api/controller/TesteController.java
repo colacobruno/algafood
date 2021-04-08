@@ -1,11 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import static com.algaworks.algafood.infrastructure.repository.spec.RestaurantesSpecs.comFreteGratis;
+import static com.algaworks.algafood.infrastructure.repository.spec.RestaurantesSpecs.comNomeSemelhante;
+
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
-import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
-import com.algaworks.algafood.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,11 +79,12 @@ public class TesteController {
 
     @GetMapping("/restaurantes/com-frete-gratis")
     public List<Restaurante> restauranteComFreteGratis(String nome) {
-        RestauranteComFreteGratisSpec comFreteGratis = new RestauranteComFreteGratisSpec();
-        RestauranteComNomeSemelhanteSpec comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
 
-        return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
+        // Antes tínhamos 2 classes independentes que instanciávamos as duas e depois passávamos no return,
+        // agora, após ter importado a classe RestaurantesSpecs (static), esses códigos podem ser removidos e
+        // usaremos dessa forma restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)))
+        return restauranteRepository.findAll(comFreteGratis()
+                .and(comNomeSemelhante(nome)));
     }
-
 
 }
