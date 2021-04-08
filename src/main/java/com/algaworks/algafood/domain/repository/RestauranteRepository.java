@@ -14,7 +14,9 @@ public interface RestauranteRepository extends JpaRepository<Restaurante,Long> {
     // Pode ser query, find, get
     List<Restaurante> queryByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 
-    @Query("from Restaurante where nome like %:nome% and cozinha.id = :id")
+    // @Query("from Restaurante where nome like %:nome% and cozinha.id = :id")
+    // Foi removido @Query pois está na query nomeada localizada no arquivo orm.xml
+    // na pasta resources -> META_INF
     List<Restaurante> consultarPorNome(String nome,@Param("id") Long cozinhaId);
 
     // List<Restaurante> findByNomeContainingAndCozinhaId(String nome,Long cozinhaId);
