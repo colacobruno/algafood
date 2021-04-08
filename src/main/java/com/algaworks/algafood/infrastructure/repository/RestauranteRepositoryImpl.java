@@ -9,6 +9,8 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -32,35 +34,53 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
     @PersistenceContext
     private EntityManager entityManager;
 
+
     @Override
     public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 
-        // Era para usar var ao invés de String, mas é do java 10
-        StringBuilder jpql = new StringBuilder();
-        jpql.append("from Restaurante where 0 = 0 ");
 
-        Map<String, Object> parametros = new HashMap<String, Object>();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder(); // Construir elementos para consulta dinâmica
 
-        if(StringUtils.hasLength(nome)){
-            jpql.append("and LOWER(nome) like :nome ");
-            parametros.put("nome", "%" + nome.toLowerCase() + "%");
-        }
+        CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class); // Criar uma query de restaurante
+        criteria.from(Restaurante.class); // from Restaurante
 
-        if(taxaFreteInicial != null){
-            jpql.append("and taxaFrete >= :taxaInicial ");
-            parametros.put("taxaInicial", taxaFreteInicial);
-        }
+        TypedQuery<Restaurante> query = entityManager.createQuery(criteria);
 
-        if(taxaFreteFinal != null){
-            jpql.append("and taxaFrete <= :taxaFinal ");
-            parametros.put("taxaFinal", taxaFreteFinal);
-        }
-
-        TypedQuery<Restaurante> query = entityManager
-                .createQuery(jpql.toString(), Restaurante.class);
-
-        parametros.forEach((chave, valor) -> query.setParameter(chave, valor));
 
         return query.getResultList();
     }
+
+    /* Aula 5.12 */
+    /*
+    @Override
+    public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
+            // Era para usar var ao invés de String, mas é do java 10
+            StringBuilder jpql = new StringBuilder();
+            jpql.append("from Restaurante where 0 = 0 ");
+
+            Map<String, Object> parametros = new HashMap<String, Object>();
+
+            if(StringUtils.hasLength(nome)){
+                jpql.append("and LOWER(nome) like :nome ");
+                parametros.put("nome", "%" + nome.toLowerCase() + "%");
+            }
+
+            if(taxaFreteInicial != null){
+                jpql.append("and taxaFrete >= :taxaInicial ");
+                parametros.put("taxaInicial", taxaFreteInicial);
+            }
+
+            if(taxaFreteFinal != null){
+                jpql.append("and taxaFrete <= :taxaFinal ");
+                parametros.put("taxaFinal", taxaFreteFinal);
+            }
+
+            TypedQuery<Restaurante> query = entityManager
+                    .createQuery(jpql.toString(), Restaurante.class);
+
+            parametros.forEach((chave, valor) -> query.setParameter(chave, valor));
+        return query.getResultList();
+    }
+    */
+
 }
