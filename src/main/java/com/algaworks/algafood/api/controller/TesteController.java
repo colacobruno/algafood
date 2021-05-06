@@ -83,8 +83,7 @@ public class TesteController {
         // Antes tínhamos 2 classes independentes que instanciávamos as duas e depois passávamos no return,
         // agora, após ter importado a classe RestaurantesSpecs (static), esses códigos podem ser removidos e
         // usaremos dessa forma restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)))
-        return restauranteRepository.findAll(comFreteGratis()
-                .and(comNomeSemelhante(nome)));
+        return restauranteRepository.findComFreteGratis(nome);
     }
 
 }
